@@ -28,10 +28,11 @@ async function postToNaver() {
     headless: true
   });
 
-  const page = await browser.newPage();
+  const context = await browser.newContext({
+    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+  });
   
-  // User-Agent 설정
-  await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+  const page = await context.newPage();
   
   try {
     console.log('1. 네이버 블로그 접속...');
@@ -50,11 +51,11 @@ async function postToNaver() {
       
       // 아이디 입력
       await page.waitForSelector('#id', { timeout: 10000 });
-      await page.type('#id', NAVER_ID, { delay: 100 });
+      await page.fill('#id', NAVER_ID);
       
       // 비밀번호 입력
       await page.waitForSelector('#pw', { timeout: 10000 });
-      await page.type('#pw', NAVER_PW, { delay: 100 });
+      await page.fill('#pw', NAVER_PW);
       
       // 로그인 버튼 클릭
       await page.click('#log.login');
@@ -72,13 +73,13 @@ async function postToNaver() {
     // 제목 입력
     console.log('5. 제목 입력...');
     await page.waitForSelector('#title', { timeout: 10000 });
-    await page.type('#title', title, { delay: 50 });
+    await page.fill('#title', title);
     console.log('✓ 제목 입력 완료');
     
     // SmartEditor iframe 찾기
     console.log('6. SmartEditor 찾기...');
     
-    // 프레임 찾기
+    // iframe 찾기
     const frame = page.frameLocator('iframe[src*="smarteditor"], iframe[src*="post"]').first();
     
     try {
