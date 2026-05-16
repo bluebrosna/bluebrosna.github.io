@@ -1,0 +1,79 @@
+name: Post to Naver Blog (Auto)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'content/**'
+  workflow_dispatch:
+    inputs:
+      post_title:
+        description: '포스트 제목'
+        required: true
+        type: string
+      post_file:
+        description: 'content/ 폴더의 파일명'
+        required: true
+        type: string
+
+jobs:
+  convert-and-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Chrome
+        run: |
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/chrome.list
+          apt-get update -qq
+          apt-get install -y -qq google-chrome-stable > /dev/null 2>&1
+          chrome --version
+
+      - name: Install Dependencies
+        run: |
+          npm install
+          npm install puppeteer-core jsdom
+
+      - name: Convert Markdown to Naver HTML
+        run: |
+          node convert-quartz.mjs ${{ inputs.post_file || github.event.inputs.post_file }}
+        env:
+          POST_TITLE: ${{ inputs.post_title || github.event.inputs.post_title }}
+
+      - name: Verify HTML Output
+        run: |
+          echo "=== 변환 결과 ==="
+          echo "제목: $(cat naver_blog_title.txt)"
+          echo "크기: $(wc -c < naver_blog_content.html) bytes"
+          head -c 300 naver_blog_content.html
+
+      - name: Post to Naver Blog
+        if: env.NAVER_ID != ''
+        run: |
+          echo "=== 네이버 블로그 자동 게시 시작 ==="
+          node naver-auto-post.mjs
+        env:
+          NAVER_ID: ${{ secrets.NAVER_ID }}
+          NAVER_PW: ${{ secrets.NAVER_PW }}
+
+      - name: Upload HTML as Artifact
+        if: env.NAVER_ID == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: naver-blog-html-${{ github.run_id }}
+          path: |
+            naver_blog_title.txt
+            naver_blog_content.html
+          retention-days: 7
