@@ -25,6 +25,8 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       NAVER_ID: ${{ secrets.NAVER_ID }}
       NAVER_PW: ${{ secrets.NAVER_PW }}
+      NAVER_COOKIE_NID_AUT: ${{ secrets.NAVER_COOKIE_NID_AUT }}
+      NAVER_COOKIE_NID_SES: ${{ secrets.NAVER_COOKIE_NID_SES }}
 
     steps:
       - name: Checkout
