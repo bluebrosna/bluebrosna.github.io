@@ -1,0 +1,3 @@
+[submodule "codex-image-generation-skill"]
+	path = codex-image-generation-skill
+	url = https://github.com/bluebrosna/bluebrosna.github.io.git
