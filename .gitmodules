@@ -1,3 +1,7 @@
 [submodule "codex-image-generation-skill"]
 	path = codex-image-generation-skill
 	url = https://github.com/bluebrosna/bluebrosna.github.io.git
+
+[submodule "harness-review-2026-05/repos/Affaanm-everything-claude-code"]
+	path = harness-review-2026-05/repos/Affaanm-everything-claude-code
+	url = https://github.com/Affaanm/everything-claude-code.git
