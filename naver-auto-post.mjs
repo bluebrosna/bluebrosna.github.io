@@ -5,13 +5,24 @@
  */
 
 import { chromium } from 'playwright';
-import { readFileSync } from 'fs';
+import { mkdirSync, readFileSync } from 'fs';
 
 const NAVER_ID = process.env.NAVER_ID;
 const NAVER_PW = process.env.NAVER_PW;
 
 const title = readFileSync('naver_blog_title.txt', 'utf-8').trim();
 const bodyHtml = readFileSync('naver_blog_content.html', 'utf-8');
+const bodyText = bodyHtml
+  .replace(/<br\s*\/?>/gi, '\n')
+  .replace(/<\/p>/gi, '\n\n')
+  .replace(/<\/h[1-6]>/gi, '\n\n')
+  .replace(/<[^>]+>/g, '')
+  .replace(/&nbsp;/g, ' ')
+  .replace(/&amp;/g, '&')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"')
+  .trim();
 
 console.log('='.repeat(60));
 console.log('네이버 블로그 자동 포스팅 시작');
@@ -20,6 +31,50 @@ console.log('ID:', NAVER_ID);
 console.log('제목:', title);
 console.log('본문 크기:', (bodyHtml.length / 1024).toFixed(2), 'KB');
 console.log('');
+
+async function clickFirstVisible(page, selectors, label, timeout = 12000) {
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) {
+    for (const selector of selectors) {
+      const locator = page.locator(selector).first();
+      if (await locator.count().catch(() => 0)) {
+        try {
+          await locator.waitFor({ state: 'visible', timeout: 1000 });
+          await locator.click({ timeout: 3000 });
+          console.log(`✓ ${label}: ${selector}`);
+          return locator;
+        } catch {
+          // Try the next selector.
+        }
+      }
+    }
+    await page.waitForTimeout(500);
+  }
+  throw new Error(`${label} 요소를 찾을 수 없음`);
+}
+
+async function setEditableText(locator, value) {
+  await locator.evaluate((el, text) => {
+    el.focus();
+    if ('value' in el) {
+      el.value = text;
+    } else {
+      el.innerText = text;
+      el.textContent = text;
+    }
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }, value);
+}
+
+async function saveDebug(page, label) {
+  mkdirSync('naver-debug', { recursive: true });
+  await page.screenshot({ path: `naver-debug/${label}.png`, fullPage: true }).catch(() => {});
+  await page.locator('body').evaluate((body) => body.innerText).then((text) => {
+    console.log('=== 현재 화면 텍스트 일부 ===');
+    console.log(text.slice(0, 1200));
+  }).catch(() => {});
+}
 
 async function postToNaver() {
   console.log('Chromium 시작...');
@@ -69,33 +124,33 @@ async function postToNaver() {
       waitUntil: 'networkidle',
       timeout: 30000
     });
+    await page.waitForTimeout(3000);
+    await saveDebug(page, 'post-write-loaded');
     
     // 제목 입력
     console.log('5. 제목 입력...');
-    await page.waitForSelector('#title', { timeout: 10000 });
-    await page.fill('#title', title);
+    const titleInput = await clickFirstVisible(page, [
+      '#title',
+      'textarea[placeholder*="제목"]',
+      'input[placeholder*="제목"]',
+      '.se-title-text [contenteditable="true"]',
+      '[class*="se-title"] [contenteditable="true"]',
+      '[contenteditable="true"][data-placeholder*="제목"]',
+      '[contenteditable="true"]:near(:text("제목"))'
+    ], '제목 입력 영역');
+    await setEditableText(titleInput, title);
     console.log('✓ 제목 입력 완료');
     
-    // SmartEditor iframe 찾기
-    console.log('6. SmartEditor 찾기...');
-    
-    // iframe 찾기
-    const frame = page.frameLocator('iframe[src*="smarteditor"], iframe[src*="post"]').first();
-    
-    try {
-      await frame.locator('[contenteditable="true"]').first().waitFor({ timeout: 5000 });
-      console.log('✓ SmartEditor iframe 발견');
-      
-      // 에디터 영역에 HTML 입력
-      await frame.locator('[contenteditable="true"]').first().evaluate((el, html) => {
-        el.innerHTML = html;
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-      }, bodyHtml);
-      
-      console.log('✓ 본문 입력 완료');
-    } catch (frameError) {
-      console.log('⚠ SmartEditor iframe을 찾을 수 없음');
-    }
+    console.log('6. 본문 입력...');
+    const bodyInput = await clickFirstVisible(page, [
+      '.se-section-text [contenteditable="true"]',
+      '.se-component-content [contenteditable="true"]',
+      '[class*="se-section"] [contenteditable="true"]',
+      '[contenteditable="true"][data-placeholder*="내용"]',
+      '[contenteditable="true"]'
+    ], '본문 입력 영역');
+    await setEditableText(bodyInput, bodyText);
+    console.log('✓ 본문 입력 완료');
     
     // 잠시 대기
     await new Promise(r => setTimeout(r, 2000));
@@ -103,14 +158,21 @@ async function postToNaver() {
     // 발행 버튼 클릭
     console.log('7. 발행 버튼 클릭...');
     
-    try {
-      const publishBtn = page.locator('#btnPublish, .btn_primary, a[onclick*="publish"]').first();
-      await publishBtn.waitFor({ timeout: 5000 });
-      await publishBtn.click();
-      console.log('✓ 발행 완료!');
-    } catch (btnError) {
-      console.log('⚠ 발행 버튼을 찾을 수 없음');
+    await clickFirstVisible(page, [
+      '#btnPublish',
+      'button:has-text("발행")',
+      'a:has-text("발행")',
+      '.btn_publish',
+      '.btn_primary',
+      'a[onclick*="publish"]'
+    ], '발행 버튼');
+
+    await page.waitForTimeout(1500);
+    const confirmPublish = page.locator('button:has-text("발행"), a:has-text("발행"), button:has-text("확인")').last();
+    if (await confirmPublish.count().catch(() => 0)) {
+      await confirmPublish.click({ timeout: 5000 }).catch(() => {});
     }
+    console.log('✓ 발행 완료!');
     
     // 결과 대기
     await new Promise(r => setTimeout(r, 3000));
@@ -122,6 +184,8 @@ async function postToNaver() {
     
   } catch (error) {
     console.error('❌ 오류 발생:', error.message);
+    await saveDebug(page, 'error');
+    process.exitCode = 1;
   } finally {
     await browser.close();
   }

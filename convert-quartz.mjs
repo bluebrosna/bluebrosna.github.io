@@ -248,7 +248,7 @@ async function markdownFileToArticle(file) {
     .use(rehypeRaw)
     .run(await unified().use(remarkParse).parse(parsed.content));
   const html = toHtml(hast, { allowDangerousHtml: true });
-  const title = process.env.POST_TITLE || parsed.data.title || null;
+  const title = parsed.data.title || process.env.POST_TITLE || null;
   const h1 = title ? `<h1>${esc(String(title))}</h1>` : "";
   return `<!doctype html><html><body><article>${h1}${html}</article></body></html>`;
 }

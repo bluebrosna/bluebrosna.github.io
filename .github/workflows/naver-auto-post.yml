@@ -93,3 +93,11 @@ jobs:
             naver_blog_title.txt
             naver_blog_content.html
           retention-days: 7
+
+      - name: Upload Naver debug artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: naver-debug-${{ github.run_id }}
+          path: naver-debug/
+          retention-days: 7
