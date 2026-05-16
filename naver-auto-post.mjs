@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 /**
- * 네이버 블로그 자동 포스팅 (Puppeteer-core)
+ * 네이버 블로그 자동 포스팅 (Playwright)
  * GitHub Actions에서 실행
- * Chrome 대신 Chromium 사용
  */
 
-import puppeteer from 'puppeteer-core';
+import { chromium } from 'playwright';
 import { readFileSync } from 'fs';
 
 const NAVER_ID = process.env.NAVER_ID;
 const NAVER_PW = process.env.NAVER_PW;
-const CHROME_PATH = process.env.CHROME_PATH || '/usr/bin/chromium-browser';
 
 const title = readFileSync('naver_blog_title.txt', 'utf-8').trim();
 const bodyHtml = readFileSync('naver_blog_content.html', 'utf-8');
@@ -21,31 +19,14 @@ console.log('='.repeat(60));
 console.log('ID:', NAVER_ID);
 console.log('제목:', title);
 console.log('본문 크기:', (bodyHtml.length / 1024).toFixed(2), 'KB');
-console.log('Chrome 경로:', CHROME_PATH);
 console.log('');
 
 async function postToNaver() {
-  console.log('Chrome 시작...');
+  console.log('Chromium 시작...');
   
-  let browser;
-  try {
-    browser = await puppeteer.launch({
-      headless: true,
-      executablePath: CHROME_PATH,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-blink-features=AutomationControlled',
-        '--disable-web-security',
-        '--disable-features=IsolateOrigins,site-per-process'
-      ]
-    });
-  } catch (chromeError) {
-    console.log('Chrome 실행 실패, 대안 방법 사용...');
-    console.log('，代案: HTML 파일만 생성하여Artifact로 업로드');
-    process.exit(0);
-  }
+  const browser = await chromium.launch({
+    headless: true
+  });
 
   const page = await browser.newPage();
   
@@ -96,27 +77,23 @@ async function postToNaver() {
     
     // SmartEditor iframe 찾기
     console.log('6. SmartEditor 찾기...');
-    const frame = await page.waitForFrame(async frame => {
-      return frame.url().includes('smarteditor') || frame.url().includes('post');
-    }, 10000).catch(() => null);
     
-    if (frame) {
+    // 프레임 찾기
+    const frame = page.frameLocator('iframe[src*="smarteditor"], iframe[src*="post"]').first();
+    
+    try {
+      await frame.locator('[contenteditable="true"]').first().waitFor({ timeout: 5000 });
       console.log('✓ SmartEditor iframe 발견');
       
       // 에디터 영역에 HTML 입력
-      await frame.evaluate((html) => {
-        const editor = document.querySelector('[contenteditable="true"]') || 
-                      document.querySelector('.se-section-inner') ||
-                      document.querySelector('#content');
-        if (editor) {
-          editor.innerHTML = html;
-          editor.dispatchEvent(new Event('input', { bubbles: true }));
-        }
+      await frame.locator('[contenteditable="true"]').first().evaluate((el, html) => {
+        el.innerHTML = html;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
       }, bodyHtml);
       
       console.log('✓ 본문 입력 완료');
-    } else {
-      console.log('⚠ SmartEditor iframe을 찾을 수 없음 - 대안 방법 사용');
+    } catch (frameError) {
+      console.log('⚠ SmartEditor iframe을 찾을 수 없음');
     }
     
     // 잠시 대기
@@ -124,14 +101,13 @@ async function postToNaver() {
     
     // 발행 버튼 클릭
     console.log('7. 발행 버튼 클릭...');
-    const publishBtn = await page.$('#btnPublish') || 
-                      await page.$('.btn_primary') ||
-                      await page.$('a[onclick*="publish"]');
     
-    if (publishBtn) {
+    try {
+      const publishBtn = page.locator('#btnPublish, .btn_primary, a[onclick*="publish"]').first();
+      await publishBtn.waitFor({ timeout: 5000 });
       await publishBtn.click();
       console.log('✓ 발행 완료!');
-    } else {
+    } catch (btnError) {
       console.log('⚠ 발행 버튼을 찾을 수 없음');
     }
     
@@ -146,7 +122,7 @@ async function postToNaver() {
   } catch (error) {
     console.error('❌ 오류 발생:', error.message);
   } finally {
-    if (browser) await browser.close();
+    await browser.close();
   }
 }
 

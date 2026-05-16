@@ -33,11 +33,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Chromium
+      - name: Install Playwright Chromium
         run: |
-          apt-get update -qq
-          apt-get install -y -qq chromium chromium-driver > /dev/null 2>&1
-          which chromium || which chromium-browser
+          npx playwright install chromium
         shell: bash
 
       - name: Install Dependencies
@@ -64,7 +62,6 @@ jobs:
         env:
           NAVER_ID: ${{ secrets.NAVER_ID }}
           NAVER_PW: ${{ secrets.NAVER_PW }}
-          CHROME_PATH: /usr/bin/chromium
         shell: bash
 
       - name: Upload HTML as Artifact
