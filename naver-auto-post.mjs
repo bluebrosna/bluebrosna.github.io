@@ -94,7 +94,7 @@ async function postToNaver() {
         // 먼저 네이버 로그인 페이지로 직접 이동
         console.log('2. 로그인 페이지로 이동...');
         await page.goto('https://nid.naver.com/nidlogin.login', {
-                waitUntil: 'networkidle',
+                            waitUntil: 'domcontentloaded',
                 timeout: 30000
         });
 
@@ -110,14 +110,14 @@ async function postToNaver() {
 
         // 로그인 버튼 클릭
         await page.click('#log\\.login');
-        await page.waitForNavigation({ waitUntil: 'networkidle', timeout: 30000 });
+            await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 });
 
         console.log('✓ 로그인 완료');
 
     
     console.log('4. 글쓰기 페이지 이동...');
         await page.goto(`https://blog.naver.com/PostWriteForm.naver?blogId=${NAVER_ID}`, {
-      waitUntil: 'networkidle',
+            waitUntil: 'domcontentloaded',
       timeout: 30000
     });
     await page.waitForTimeout(3000);
