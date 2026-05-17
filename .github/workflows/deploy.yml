@@ -47,6 +47,12 @@ jobs:
       - name: Copy verification files to root
         run: cp quartz/static/naver*.html public/ 2>/dev/null || true
 
+      - name: Copy static assets to public
+        run: |
+          mkdir -p public/static
+          cp static/*.png public/static/ 2>/dev/null || true
+          cp -r static/assets/* public/static/assets/ 2>/dev/null || true
+
       - name: Copy ads.txt to root
         run: cp quartz/static/ads.txt public/ 2>/dev/null || true
 
