@@ -1,0 +1,87 @@
+name: Prepare Naver Blog Post
+
+on:
+  push:
+    branches: [main]
+    paths: ['content/**']
+  workflow_dispatch:
+    inputs:
+      post_file:
+        description: 'content/ 폴더의 파일명 (예: content/my-post.md)'
+        required: true
+        type: string
+      post_title:
+        description: '게시 제목 (비우면 파일명 사용)'
+        required: false
+        type: string
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Detect changed post file (push event)
+        if: github.event_name == 'push'
+        id: detect
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'content/**' | head -1)
+          if [ -z "$CHANGED" ]; then
+            echo "No content file changed."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            TITLE="$(basename "${CHANGED%.*}")"
+            echo "post_file=$CHANGED" >> "$GITHUB_OUTPUT"
+            echo "post_title=$TITLE" >> "$GITHUB_OUTPUT"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Convert Markdown to Naver HTML
+        if: github.event_name == 'workflow_dispatch' || steps.detect.outputs.skip != 'true'
+        env:
+          POST_TITLE: ${{ inputs.post_title || steps.detect.outputs.post_title }}
+        run: |
+          FILE="${{ inputs.post_file || steps.detect.outputs.post_file }}"
+          echo "📄 변환 대상: $FILE"
+          node convert-quartz.mjs "$FILE"
+
+      - name: Show output summary
+        if: github.event_name == 'workflow_dispatch' || steps.detect.outputs.skip != 'true'
+        run: |
+          echo "=== 변환 결과 ==="
+          echo "제목: $(cat naver_blog_title.txt)"
+          echo "HTML: $(wc -c < naver_blog_content.html) bytes"
+
+      - name: Upload payload as artifact
+        if: github.event_name == 'workflow_dispatch' || steps.detect.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: naver-blog-payload
+          path: |
+            naver_blog_title.txt
+            naver_blog_content.html
+          retention-days: 14
+
+      - name: Notify local OpenClaw via Telegram
+        if: github.event_name == 'workflow_dispatch' || steps.detect.outputs.skip != 'true'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GH_RUN_ID: ${{ github.run_id }}
+          GH_REPO: ${{ github.repository }}
+          POST_TITLE: ${{ inputs.post_title || steps.detect.outputs.post_title }}
+        run: node naver-notify.mjs
