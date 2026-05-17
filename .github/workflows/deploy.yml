@@ -68,6 +68,17 @@ jobs:
             cp "$f" "$slug/index.html"
           done
 
+      - name: Fix CSS paths in subdirectory HTML files
+        run: |
+          cd public
+          # Fix ./index.css to /index.css in all subdirectory index.html files
+          find . -name "index.html" -path "*/index.html" | while read f; do
+            sed -i 's|href="./index.css"|href="/index.css"|g' "$f"
+            sed -i 's|href="./static/|href="/static/|g' "$f"
+            sed -i 's|href="./prescript|href="/prescript|g' "$f"
+          done
+          echo "Fixed CSS paths in subdirectory pages"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
