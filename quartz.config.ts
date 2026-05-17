@@ -10,10 +10,10 @@ const config: QuartzConfig = {
   configuration: {
     pageTitle: "블루의 블로그",
     pageTitleSuffix: "",
-    enableSPA: true,
+    enableSPA: false,
     enablePopovers: true,
     locale: "ko-KR",
-    baseUrl: "",
+    baseUrl: "https://bluebrosna.github.io",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {
