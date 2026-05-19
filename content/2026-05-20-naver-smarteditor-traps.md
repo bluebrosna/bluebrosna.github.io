@@ -1,6 +1,6 @@
 ---
 title: "네이버 SmartEditor 자동화, '취소' 버튼 클릭했는데 '취소선'이 적용됐어요"
-date: 2026-05-19
+date: 2026-05-20
 tags:
   - SmartEditor
   - 네이버블로그
@@ -15,7 +15,7 @@ tags:
 description: "네이버 SmartEditor 자동화에서 '취소' 버튼 클릭했는데 '취소선'이 적용된 황당한 버그부터 8가지 함정을 경험담처럼 풀어봅니다."
 ---
 
-![코드 에러가 표시된 화면](https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80)
+![코드 에러가 표시된 화면](/static/grok-images/post-05-image-1.png)
 
 ## 도입부 — 가장 황당했던 버그
 

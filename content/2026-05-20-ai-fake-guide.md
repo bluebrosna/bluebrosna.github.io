@@ -1,6 +1,6 @@
 ---
 title: "AI가 '이렇게 설치하세요'라고 했는데… 존재하지도 않는 플러그인이었어요"
-date: 2026-05-19
+date: 2026-05-20
 tags:
   - AI가이드
   - hallucination
@@ -16,7 +16,7 @@ tags:
 description: "AI가 추천한 플러그인이 npm에도 GitHub에도 없었어요. 진짜 당황했던 경험과 함께 AI 가짜 가이드를 걸러내는 5단계 검증 체크리스트를 공유합니다."
 ---
 
-![AI가 가이드를 생성하는 모습](https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80)
+![AI가 가이드를 생성하는 모습](/static/grok-images/post-04-image-1.png)
 
 ## 도입부 — 실제로 당황했던 이야기
 

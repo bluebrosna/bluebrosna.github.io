@@ -1,6 +1,6 @@
 ---
 title: "GitHub Pages에 글 올리면 자동으로 네이버에도 올라올 줄 알았는데... 안 되더라구요"
-date: 2026-05-19
+date: 2026-05-20
 tags:
   - 네이버블로그
   - GitHubActions
@@ -15,7 +15,7 @@ tags:
 description: "GitHub Pages로 네이버 블로그 자동 발행을 시도했다가 데이터센터 IP 차단을 겪었습니다. 3시간 헤맸던 경험과 실제 작동하는 2단계 파이프라인을 공유합니다."
 ---
 
-![GitHub Actions 로고와 네이버 블로그가 연결된 이미지](https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80)
+![GitHub Actions 로고와 네이버 블로그가 연결된 이미지](/static/grok-images/post-01-image-1.png)
 
 ## 도입부 — 실제로 실패했던 이야기
 

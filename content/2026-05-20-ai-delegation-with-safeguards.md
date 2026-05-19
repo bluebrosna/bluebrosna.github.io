@@ -15,7 +15,6 @@ tags:
 description: "Claude 토큰이 자꾸 부족해서 결국 GPT-5.5한테 검수 권한을 넘겼습니다. 환각 막는 안전장치 만든 과정과 실제로 작동시킨 결과 풀어드릴게요."
 ---
 
-![AI 위임 헤더 이미지](placeholder-post-delegation-image-1)
 
 ## 도입부 — Claude가 자꾸 토큰을 다 써요
 
@@ -341,4 +340,3 @@ v2.0 (예정): 운영 경험 반영 시
 
 > 💡 다음 글: AI 환각 가이드 검증법 — AI가 만든 가짜 가이드에 속지 않는 법 — 함께 보면 좋습니다.
 
-![AI 위임 본문 이미지](placeholder-post-delegation-image-2)
