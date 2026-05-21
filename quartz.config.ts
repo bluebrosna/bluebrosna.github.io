@@ -14,6 +14,7 @@ const config: QuartzConfig = {
     enablePopovers: true,
     locale: "ko-KR",
     baseUrl: "bluebrosna.github.io",
+    analytics: null,
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {
