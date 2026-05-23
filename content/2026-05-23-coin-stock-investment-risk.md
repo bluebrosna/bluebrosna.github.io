@@ -112,6 +112,9 @@ description: "코인과 주식투자를 시작하기 전에 반드시 알아야 
 
 솔직히 테마주를 완전히 피하라는 말은 현실적이지 않을 수 있습니다. 하지만 비중을 작게 두고, 손실 기준을 정하고, 왜 사는지 한 문장으로 설명할 수 있어야 합니다. 설명이 "남들이 산다"라면 멈추는 게 낫습니다.
 
+
+![Visual pack 2](/static/grok-images/coin-stock-investment-risk-grok-image-20260523-180703.jpg)
+
 ## 레버리지와 빚투는 위험을 몇 배로 키운다
 
 ### 방향을 맞혀도 청산될 수 있다
@@ -196,6 +199,9 @@ description: "코인과 주식투자를 시작하기 전에 반드시 알아야 
 
 분산은 수익을 포기하는 게 아니라 생존 확률을 높이는 방식입니다. 재미는 덜할 수 있습니다. 그런데 투자에서 재미를 너무 찾으면 위험해집니다. 지루한 구조가 오래 가는 경우가 많습니다.
 
+
+![Visual pack 3](/static/grok-images/coin-stock-investment-risk-grok-image-20260523-184756.jpg)
+
 ## 코인과 주식을 비교해서 봐야 하는 이유
 
 ### 코인은 보관 리스크, 주식은 기업 리스크가 크다
@@ -250,7 +256,7 @@ description: "코인과 주식투자를 시작하기 전에 반드시 알아야 
 투자는 자기 자신을 알아가는 과정이기도 합니다. 내가 어떤 상황에서 욕심을 내는지, 어떤 손실에서 무너지는지, 어떤 정보를 믿고 싶은지 알아야 합니다.
 
 
-![Visual pack 2](/static/grok-images/coin-stock-investment-risk-grok-image-20260523-180703.jpg)
+![Visual pack 4](/static/grok-images/coin-stock-investment-risk-grok-image-20260523-184758.jpg)
 
 ## 마무리: 투자는 빨리 시작하는 것보다 오래 살아남는 게 중요하다
 
