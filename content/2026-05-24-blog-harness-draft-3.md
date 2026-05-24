@@ -10,7 +10,8 @@ tags:
   - Draft
 ---
 
-![Visual pack 1](https://bluebrosna.github.io/static/grok-images/blog-harness-draft-3-15079882-blog-harness-draft-3-h2-1-20260524-151038-056547000.jpg)
+
+![Visual pack 1](https://bluebrosna.github.io/static/grok-images/2026-05-24-blog-harness-draft-3-15079882-codex-beta-1.png)
 
 ## 커피는 왜 이렇게 자주 찾게 될까
 
@@ -48,6 +49,8 @@ tags:
 
 커피는 피로를 무시하게 해 주는 물건이 아니라, 잠깐 버틸 수 있게 돕는 도구에 가깝습니다. 이 차이를 알면 커피를 더 현명하게 쓸 수 있습니다.
 
+![Visual pack 2](https://bluebrosna.github.io/static/grok-images/2026-05-24-blog-harness-draft-3-15079882-codex-beta-2.png)
+
 ## 커피의 기능은 몸만이 아니라 일에도 있다
 
 ### 집중을 여는 작은 스위치가 된다
@@ -66,7 +69,6 @@ tags:
 
 그런데 이 루틴은 너무 의식적으로 만들 필요는 없습니다. 자연스럽게 반복되면 됩니다. 커피는 일정한 리듬을 주는 도구지, 억지로 삶을 정돈하는 장치는 아닙니다.
 
-![Visual pack 2](https://bluebrosna.github.io/static/grok-images/blog-harness-draft-3-15079882-blog-harness-draft-3-h2-2-20260524-151101-111764000.jpg)
 
 ## 커피의 기능은 기분에도 닿는다
 
@@ -85,6 +87,8 @@ tags:
 솔직히 중요한 대화도 커피가 있으면 조금 덜 무겁습니다. 완전히 긴장을 풀어 주는 건 아니지만, 너무 딱딱한 분위기를 조금 낮춰 줍니다. 그래서 만남의 자리에서 커피는 장식이 아니라 분위기를 조절하는 기능을 합니다.
 
 물론 관계를 만들어 주는 건 커피가 아니라 사람입니다. 그런데 커피는 그 사람이 말을 꺼내기 쉬운 환경을 만드는 쪽에 가깝습니다. 이런 기능은 꽤 자주 쓰입니다.
+
+![Visual pack 3](https://bluebrosna.github.io/static/grok-images/2026-05-24-blog-harness-draft-3-15079882-codex-beta-3.png)
 
 ## 커피를 잘 쓰려면 알아야 할 점
 
@@ -122,7 +126,8 @@ tags:
 
 커피의 기능은 크지만 과장하면 안 됩니다. 작은 도움을 꾸준히 주는 쪽으로 이해하는 게 가장 현실적입니다.
 
-![Visual pack 3](https://bluebrosna.github.io/static/grok-images/blog-harness-draft-3-15079882-blog-harness-draft-3-h2-1-20260524-151110-633044000.jpg)
+
+![Visual pack 4](https://bluebrosna.github.io/static/grok-images/2026-05-24-blog-harness-draft-3-15079882-codex-beta-4.png)
 
 ## 이번 하네스 사고에서 배운 것
 
@@ -188,7 +193,6 @@ Grok 이미지도 마찬가지입니다. 이미지는 본문 H2를 기준으로 
 
 이 기준이 있으면 사용자는 돌아와서 “어디서 실패했나”가 아니라 “어떤 fallback이 왜 발동했나”를 바로 확인할 수 있습니다. 그 차이가 자동화의 신뢰도를 만듭니다. 완벽하게 실패가 없는 시스템보다, 실패를 작게 만들고 다음 단계로 복구하는 시스템이 실제 운영에서는 더 오래 버팁니다.
 
-![Visual pack 4](https://bluebrosna.github.io/static/grok-images/blog-harness-draft-3-15079882-blog-harness-draft-3-h2-3-20260524-151126-568461000.jpg)
 
 ## 단독 모드 운영 메모
 
